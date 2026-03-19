@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Café Origen — Café de Especialidad Colombiano</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=DM+Sans:wght@300;400;500;600;700&family=Satisfy&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+:root {
+  --espresso: #1a0e0a;
+  --crema: #f5e6c8;
+  --caramel: #c4813d;
+  --gold: #d4a54a;
+  --terracota: #b85c38;
+  --sage: #5a7247;
+  --sage-light: #7a9463;
+  --cream: #faf6ef;
+  --milk: #fff9f0;
+  --charcoal: #2d2926;
+  --warm-gray: #8c7e73;
+  --soft-shadow: 0 4px 30px rgba(26,14,10,.12);
+  --deep-shadow: 0 12px 50px rgba(26,14,10,.2);
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--cream);
+  color: var(--charcoal);
+  line-height: 1.7;
+  overflow-x: hidden;
+}
+
+/* NAVBAR */
+.navbar {
+  position: fixed; top:0; left:0; right:0; z-index:1000;
+  background: rgba(26,14,10,.95);
+  backdrop-filter: blur(20px);
+  padding: 0 1.5rem;
+  display: flex; align-items: center; justify-content: space-between;
+  height: 64px;
+  border-bottom: 1px solid rgba(212,165,74,.2);
+}
+.nav-logo {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.4rem; font-weight: 900;
+  color: var(--crema); text-decoration: none; letter-spacing: 1px;
+}
+.nav-logo span { color: var(--gold); font-family:'Satisfy',cursive; font-weight:400; font-size:1.7rem; }
+.nav-links { display:flex; gap:1.4rem; list-style:none; align-items:center; }
+.nav-links a {
+  color: var(--crema); text-decoration:none; font-size:.78rem;
+  font-weight:500; letter-spacing:.5px; text-transform:uppercase;
+  transition: color .3s;
+}
+.nav-links a:hover { color:var(--gold); }
+.nav-cta {
+  background: var(--gold) !important; color: var(--espresso) !important;
+  padding: .5rem 1rem; border-radius:4px;
+  font-weight:700 !important;
+}
+.hamburger { display:none; flex-direction:column; gap:5px; cursor:pointer; background:none; border:none; }
+.hamburger span { display:block; width:24px; height:2px; background:var(--crema); }
+
+/* HERO */
+.hero {
+  min-height: 100vh;
+  background: linear-gradient(135deg, var(--espresso) 0%, #2a1810 40%, #3d2318 100%);
+  display: flex; align-items: center; justify-content: center;
+  text-align: center; padding: 6rem 2rem 4rem;
+  position: relative;
+}
+.hero::before {
+  content:''; position:absolute; inset:0;
+  background: radial-gradient(ellipse at 30% 20%, rgba(212,165,74,.08) 0%, transparent 60%),
+              radial-gradient(ellipse at 70% 80%, rgba(184,92,56,.06) 0%, transparent 50%);
+}
+.hero-content { position:relative; z-index:2; max-width:800px; }
+.hero-badge {
+  display:inline-block; padding:.4rem 1.2rem;
+  border:1px solid var(--gold); border-radius:50px;
+  font-size:.75rem; letter-spacing:3px; text-transform:uppercase;
+  color:var(--gold); margin-bottom:2rem;
+}
+.hero h1 {
+  font-family:'Playfair Display',serif;
+  font-size:clamp(2.5rem,6vw,5rem); font-weight:900;
+  color:var(--crema); line-height:1.1; margin-bottom:1.5rem;
+}
+.hero h1 em { font-style:italic; color:var(--gold); }
+.hero p { font-size:1.1rem; color:rgba(245,230,200,.7); max-width:550px; margin:0 auto 2.5rem; }
+.hero-btns { display:flex; gap:1rem; justify-content:center; flex-wrap:wrap; }
+.btn-primary {
+  background:var(--gold); color:var(--espresso);
+  padding:.9rem 2rem; border:none; border-radius:4px;
+  font-family:'DM Sans',sans-serif; font-size:.9rem; font-weight:700;
+  cursor:pointer; text-decoration:none; text-transform:uppercase;
+  letter-spacing:1px; transition: all .3s;
+}
+.btn-primary:hover { background:var(--caramel); transform:translateY(-2px); }
+.btn-outline {
+  background:transparent; color:var(--crema);
+  padding:.9rem 2rem; border:1px solid rgba(245,230,200,.3); border-radius:4px;
+  font-family:'DM Sans',sans-serif; font-size:.9rem; font-weight:500;
+  cursor:pointer; text-decoration:none; text-transform:uppercase; letter-spacing:1px; transition: all .3s;
+}
+.btn-outline:hover { border-color:var(--gold); color:var(--gold); }
+
+/* LOGO */
+.logo-showcase { background: var(--milk); padding: 5rem 2rem; text-align:center; border-bottom: 1px solid rgba(196,129,61,.1); }
+.logo-showcase .logo-container {
+  width: 200px; height: 200px; margin: 0 auto 2rem;
+  background: var(--espresso); border-radius: 50%;
+  display: flex; flex-direction:column; align-items:center; justify-content:center;
+  box-shadow: 0 8px 40px rgba(26,14,10,.2);
+  border: 3px solid var(--gold);
+}
+.logo-container .logo-icon { font-size: 3rem; margin-bottom:.3rem; }
+.logo-container .logo-text { font-family:'Playfair Display',serif; font-weight:900; color:var(--crema); font-size:1.3rem; letter-spacing:2px; }
+.logo-container .logo-sub { font-size:.55rem; color:var(--gold); letter-spacing:4px; text-transform:uppercase; margin-top:.2rem; }
+.logo-desc { font-size:.95rem; color:var(--warm-gray); max-width:500px; margin:0 auto; }
+
+/* SECTIONS */
+.section { padding: 5rem 2rem; }
+.section-header { text-align:center; margin-bottom:3.5rem; }
+.section-header .tag { display:inline-block; font-size:.7rem; letter-spacing:3px; text-transform:uppercase; color:var(--caramel); font-weight:600; margin-bottom:.8rem; }
+.section-header h2 { font-family:'Playfair Display',serif; font-size:clamp(1.8rem,3.5vw,2.8rem); font-weight:700; color:var(--espresso); line-height:1.2; }
+.section-header p { color:var(--warm-gray); max-width:550px; margin:.8rem auto 0; font-size:.95rem; }
+.container { max-width:1100px; margin:0 auto; }
+
+/* ABOUT */
+.about { background:var(--cream); }
+.about-grid { display:grid; grid-template-columns:1fr 1fr; gap:4rem; align-items:center; }
+.about-img {
+  aspect-ratio:4/5; background: linear-gradient(135deg, var(--espresso), #3d2318);
+  border-radius:12px; display:flex; align-items:center; justify-content:center;
+  font-size:6rem; box-shadow: var(--deep-shadow);
+}
+.about-content h3 { font-family:'Playfair Display',serif; font-size:2rem; font-weight:700; color:var(--espresso); margin-bottom:1rem; }
+.about-content p { color:var(--warm-gray); margin-bottom:1rem; font-size:.93rem; }
+.about-values { display:flex; gap:2rem; margin-top:1.5rem; flex-wrap:wrap; }
+.value-item { display:flex; align-items:center; gap:.5rem; }
+.value-dot { width:10px; height:10px; border-radius:50%; background:var(--sage); flex-shrink:0; }
+.value-item span { font-size:.85rem; font-weight:600; color:var(--espresso); }
+
+/* CATALOG */
+.catalog { background: var(--milk); }
+.catalog-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:2rem; }
+.product-card { background:white; border-radius:12px; overflow:hidden; box-shadow: var(--soft-shadow); transition: transform .3s, box-shadow .3s; }
+.product-card:hover { transform:translateY(-6px); box-shadow: var(--deep-shadow); }
+.product-img { height:220px; display:flex; align-items:center; justify-content:center; font-size:4rem; position:relative; }
+.product-img .price-tag { position:absolute; top:1rem; right:1rem; background:var(--gold); color:var(--espresso); padding:.3rem .8rem; border-radius:4px; font-weight:700; font-size:.85rem; }
+.product-img.bg1 { background:linear-gradient(135deg,#2a1810,#4a2c1a); }
+.product-img.bg2 { background:linear-gradient(135deg,#3d2318,#5a3828); }
+.product-img.bg3 { background:linear-gradient(135deg,#1a0e0a,#3a2015); }
+.product-img.bg4 { background:linear-gradient(135deg,#4a2c1a,#6a4030); }
+.product-info { padding:1.5rem; }
+.product-info h4 { font-family:'Playfair Display',serif; font-size:1.1rem; margin-bottom:.3rem; color:var(--espresso); }
+.product-info .weight { font-size:.8rem; color:var(--warm-gray); margin-bottom:.5rem; }
+.product-info p { font-size:.85rem; color:var(--warm-gray); margin-bottom:1rem; }
+.btn-add { width:100%; padding:.7rem; background:var(--espresso); color:var(--crema); border:none; border-radius:4px; font-family:'DM Sans',sans-serif; font-weight:600; font-size:.85rem; cursor:pointer; transition:.3s; text-transform:uppercase; letter-spacing:1px; }
+.btn-add:hover { background:var(--caramel); }
+
+/* ===== SURVEY DASHBOARD ===== */
+.survey-dash { background: var(--espresso); color: var(--crema); }
+.survey-dash .section-header h2 { color:var(--crema); }
+.survey-dash .section-header .tag { color:var(--gold); }
+.survey-dash .section-header p { color:rgba(245,230,200,.6); }
+.survey-kpis { display:grid; grid-template-columns:repeat(auto-fit,minmax(130px,1fr)); gap:1rem; margin-bottom:2.5rem; }
+.survey-kpi { background:rgba(255,255,255,.04); border:1px solid rgba(212,165,74,.15); border-radius:12px; padding:1.3rem; text-align:center; }
+.survey-kpi .kn { font-family:'Playfair Display',serif; font-size:2rem; font-weight:700; color:var(--gold); }
+.survey-kpi .kt { font-size:.7rem; color:rgba(245,230,200,.5); text-transform:uppercase; letter-spacing:1px; margin-top:.3rem; }
+.charts-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:1.5rem; margin-bottom:2.5rem; }
+.chart-card { background:rgba(255,255,255,.04); border:1px solid rgba(212,165,74,.1); border-radius:14px; padding:1.5rem; }
+.chart-card h4 { font-size:.88rem; color:var(--gold); margin-bottom:.8rem; font-weight:600; }
+.chart-wrap { position:relative; height:260px; }
+.analysis-box { background: linear-gradient(135deg, rgba(212,165,74,.08), rgba(90,114,71,.08)); border:1px solid rgba(212,165,74,.2); border-radius:14px; padding:2rem; }
+.analysis-box h4 { font-family:'Playfair Display',serif; font-size:1.3rem; color:var(--gold); margin-bottom:1rem; }
+.analysis-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:1.5rem; }
+.insight-card { background:rgba(255,255,255,.03); border-radius:10px; padding:1.2rem; }
+.insight-card .ic { font-size:1.5rem; margin-bottom:.5rem; }
+.insight-card h5 { font-size:.95rem; color:var(--crema); margin-bottom:.4rem; }
+.insight-card p { font-size:.83rem; color:rgba(245,230,200,.55); line-height:1.6; }
+.insight-action { display:inline-block; margin-top:.6rem; padding:.3rem .8rem; background:rgba(212,165,74,.15); border-radius:4px; font-size:.73rem; color:var(--gold); font-weight:600; }
+
+/* ===== CATALOG PDF ===== */
+.catalog-pdf { background: var(--milk); }
+.pdf-tabs { display:flex; gap:.5rem; margin-bottom:2rem; justify-content:center; flex-wrap:wrap; }
+.pdf-tab { padding:.65rem 1.3rem; border:1px solid rgba(26,14,10,.15); border-radius:6px; cursor:pointer; font-size:.83rem; font-weight:600; background:white; color:var(--espresso); transition:.3s; font-family:'DM Sans',sans-serif; }
+.pdf-tab.active { background:var(--espresso); color:var(--crema); border-color:var(--espresso); }
+.pdf-tab:hover:not(.active) { border-color:var(--caramel); }
+.pdf-page { display:none; }
+.pdf-page.active { display:block; }
+.pdf-content { background:white; border-radius:16px; padding:2.5rem; box-shadow: var(--soft-shadow); max-width:900px; margin:0 auto; }
+.pdf-content h3 { font-family:'Playfair Display',serif; font-size:1.4rem; color:var(--espresso); margin-bottom:.5rem; }
+.pdf-content h4 { font-family:'Playfair Display',serif; font-size:1.1rem; color:var(--espresso); margin-bottom:.5rem; margin-top:1.5rem; }
+.pdf-content p { font-size:.88rem; color:var(--warm-gray); margin-bottom:.5rem; }
+.pdf-pg { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:1.2rem; margin-top:1rem; }
+.pdf-prod { border:1px solid rgba(26,14,10,.1); border-radius:10px; padding:1.2rem; background:var(--cream); }
+.pdf-prod .badge { display:inline-block; background:var(--gold); color:var(--espresso); padding:.15rem .5rem; border-radius:3px; font-size:.7rem; font-weight:700; margin-bottom:.5rem; }
+.pdf-prod h5 { font-size:1rem; color:var(--espresso); margin-bottom:.2rem; }
+.pdf-prod .meta { font-size:.78rem; color:var(--warm-gray); margin-bottom:.3rem; }
+.pdf-prod .notes { font-size:.78rem; color:var(--caramel); font-style:italic; margin-bottom:.5rem; }
+.pdf-prod .price { font-size:1.15rem; font-weight:700; color:var(--espresso); }
+.ptable { width:100%; border-collapse:collapse; margin-top:1rem; font-size:.83rem; }
+.ptable th { background:var(--espresso); color:var(--crema); padding:.6rem .5rem; text-align:left; font-size:.73rem; text-transform:uppercase; letter-spacing:.5px; }
+.ptable td { padding:.55rem .5rem; border-bottom:1px solid rgba(26,14,10,.06); }
+.ptable tr:nth-child(even) { background:var(--cream); }
+.ptable .pc { font-weight:700; color:var(--espresso); }
+.ptable .dc { font-weight:700; color:var(--sage); }
+
+/* AUDIENCE */
+.audience { background: var(--espresso); color: var(--crema); }
+.audience .section-header h2 { color:var(--crema); }
+.audience .section-header .tag { color:var(--gold); }
+.audience .section-header p { color:rgba(245,230,200,.6); }
+.persona-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:2rem; }
+.persona-card { background: rgba(255,255,255,.04); border: 1px solid rgba(212,165,74,.15); border-radius: 12px; padding: 2rem; transition: border-color .3s; }
+.persona-card:hover { border-color: var(--gold); }
+.persona-icon { font-size:2.5rem; margin-bottom:1rem; }
+.persona-card h4 { font-family:'Playfair Display',serif; font-size:1.15rem; margin-bottom:.3rem; color:var(--crema); }
+.persona-card .age { font-size:.8rem; color:var(--gold); margin-bottom:.8rem; font-weight:600; }
+.persona-card p { font-size:.87rem; color:rgba(245,230,200,.6); margin-bottom:.8rem; }
+.persona-tags { display:flex; flex-wrap:wrap; gap:.4rem; }
+.persona-tag { padding:.25rem .7rem; border-radius:50px; font-size:.7rem; background:rgba(212,165,74,.1); border:1px solid rgba(212,165,74,.2); color:var(--gold); font-weight:500; }
+
+/* PUBLICATIONS */
+.publications { background:var(--cream); }
+.pub-grid { display:grid; grid-template-columns:1fr 1fr; gap:2.5rem; }
+.pub-card { background:white; border-radius:16px; overflow:hidden; box-shadow: var(--soft-shadow); }
+.pub-visual { padding:2.5rem; min-height:300px; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; }
+.pub-visual.pub1 { background: linear-gradient(135deg, #1a0e0a 0%, #3d2318 50%, #5a3525 100%); color:var(--crema); }
+.pub-visual.pub2 { background: linear-gradient(135deg, var(--sage) 0%, #3d5a2e 100%); color:white; }
+.pub-visual .pub-icon { font-size:3.5rem; margin-bottom:1rem; }
+.pub-visual h3 { font-family:'Playfair Display',serif; font-size:1.7rem; font-weight:700; margin-bottom:.5rem; line-height:1.2; }
+.pub-visual .pub-tagline { font-size:.88rem; opacity:.8; margin-bottom:1rem; }
+.pub-visual .pub-cta { display:inline-block; padding:.5rem 1.3rem; border:1px solid rgba(255,255,255,.4); border-radius:4px; font-size:.78rem; font-weight:600; text-transform:uppercase; letter-spacing:1px; }
+.pub-meta { padding:1.5rem; }
+.pub-meta .platform { font-size:.73rem; color:var(--caramel); font-weight:600; text-transform:uppercase; letter-spacing:1px; margin-bottom:.3rem; }
+.pub-meta h4 { font-size:1rem; color:var(--espresso); margin-bottom:.3rem; }
+.pub-meta p { font-size:.85rem; color:var(--warm-gray); }
+
+/* VIDEO */
+.video-section { background: var(--milk); }
+.video-container { max-width:800px; margin:0 auto; background:var(--espresso); border-radius:16px; overflow:hidden; box-shadow: var(--deep-shadow); }
+.video-player { aspect-ratio:16/9; display:flex; flex-direction:column; align-items:center; justify-content:center; background: linear-gradient(135deg, #1a0e0a, #3d2318); position:relative; cursor:pointer; }
+.play-btn { width:80px; height:80px; border-radius:50%; background:rgba(212,165,74,.9); display:flex; align-items:center; justify-content:center; font-size:2rem; color:var(--espresso); transition: transform .3s; box-shadow: 0 0 40px rgba(212,165,74,.3); }
+.video-player:hover .play-btn { transform:scale(1.1); }
+.video-title { position:absolute; bottom:2rem; left:2rem; right:2rem; color:var(--crema); }
+.video-title h4 { font-family:'Playfair Display',serif; font-size:1.3rem; }
+.video-title p { font-size:.85rem; opacity:.7; }
+.video-info { padding:1.5rem; color:var(--crema); }
+.video-info p { font-size:.9rem; color:rgba(245,230,200,.7); }
+.video-stats { display:flex; gap:2rem; margin-top:1rem; }
+.stat { text-align:center; }
+.stat .num { font-family:'Playfair Display',serif; font-size:1.5rem; font-weight:700; color:var(--gold); }
+.stat .label { font-size:.7rem; color:rgba(245,230,200,.5); text-transform:uppercase; letter-spacing:1px; }
+
+/* ORDERS */
+.orders { background: var(--cream); }
+.order-form { max-width:700px; margin:0 auto; background:white; border-radius:16px; padding:3rem; box-shadow: var(--soft-shadow); }
+.form-row { display:grid; grid-template-columns:1fr 1fr; gap:1.5rem; margin-bottom:1.5rem; }
+.form-group { display:flex; flex-direction:column; }
+.form-group.full { grid-column:1/-1; }
+.form-group label { font-size:.8rem; font-weight:600; color:var(--espresso); margin-bottom:.4rem; text-transform:uppercase; letter-spacing:.5px; }
+.form-group input, .form-group select, .form-group textarea { padding:.8rem 1rem; border:1px solid rgba(140,126,115,.2); border-radius:6px; font-family:'DM Sans',sans-serif; font-size:.9rem; background:var(--cream); }
+.form-group input:focus, .form-group select:focus, .form-group textarea:focus { outline:none; border-color:var(--caramel); }
+.order-summary { background:var(--cream); border-radius:8px; padding:1.5rem; margin:1.5rem 0; }
+.order-summary h4 { font-family:'Playfair Display',serif; margin-bottom:.8rem; color:var(--espresso); }
+.summary-line { display:flex; justify-content:space-between; margin-bottom:.5rem; font-size:.9rem; color:var(--warm-gray); }
+.summary-line.total { font-weight:700; color:var(--espresso); font-size:1.05rem; border-top:1px solid rgba(140,126,115,.2); padding-top:.8rem; margin-top:.5rem; }
+.btn-order { width:100%; padding:1rem; background:var(--espresso); color:var(--crema); border:none; border-radius:6px; font-family:'DM Sans',sans-serif; font-size:1rem; font-weight:700; cursor:pointer; transition:.3s; text-transform:uppercase; letter-spacing:1px; }
+.btn-order:hover { background:var(--caramel); }
+
+/* PAYMENT */
+.payment { background: var(--milk); }
+.payment-container { max-width:600px; margin:0 auto; background:white; border-radius:16px; overflow:hidden; box-shadow: var(--soft-shadow); }
+.payment-header { background:var(--espresso); padding:2rem; text-align:center; color:var(--crema); }
+.payment-header h3 { font-family:'Playfair Display',serif; font-size:1.5rem; margin-bottom:.3rem; }
+.payment-header p { font-size:.85rem; opacity:.7; }
+.payment-methods { padding:2rem; }
+.method-tabs { display:flex; gap:.5rem; margin-bottom:2rem; }
+.method-tab { flex:1; padding:.8rem; border:1px solid rgba(140,126,115,.2); border-radius:6px; text-align:center; cursor:pointer; font-size:.85rem; font-weight:600; transition:.3s; background:white; font-family:'DM Sans',sans-serif; }
+.method-tab.active { background:var(--espresso); color:var(--crema); border-color:var(--espresso); }
+.card-form { display:flex; flex-direction:column; gap:1.2rem; }
+.card-input input { width:100%; padding:.9rem 1rem; border:1px solid rgba(140,126,115,.2); border-radius:6px; font-family:'DM Sans',sans-serif; font-size:.9rem; background:var(--cream); }
+.card-input input:focus { outline:none; border-color:var(--caramel); }
+.card-row { display:grid; grid-template-columns:1fr 1fr; gap:1rem; }
+.secure-badge { display:flex; align-items:center; justify-content:center; gap:.5rem; padding:1rem; background:rgba(90,114,71,.08); border-radius:6px; font-size:.8rem; color:var(--sage); font-weight:600; margin-top:.5rem; }
+.btn-pay { width:100%; padding:1rem; background:var(--gold); color:var(--espresso); border:none; border-radius:6px; font-family:'DM Sans',sans-serif; font-size:1rem; font-weight:700; cursor:pointer; transition:.3s; text-transform:uppercase; letter-spacing:1px; margin-top:.5rem; }
+.btn-pay:hover { background:var(--caramel); color:white; }
+.payment-logos { display:flex; justify-content:center; gap:1.5rem; padding:1.5rem; border-top:1px solid rgba(140,126,115,.1); font-size:.8rem; color:var(--warm-gray); font-weight:500; }
+
+/* STRATEGY */
+.strategy { background: linear-gradient(135deg, var(--espresso) 0%, #2a1810 100%); color:var(--crema); }
+.strategy .section-header h2 { color:var(--crema); }
+.strategy .section-header .tag { color:var(--gold); }
+.strategy .section-header p { color:rgba(245,230,200,.6); }
+.strat-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:2rem; }
+.strat-card { background:rgba(255,255,255,.03); border:1px solid rgba(212,165,74,.12); border-radius:12px; padding:2rem; transition:.3s; }
+.strat-card:hover { border-color:var(--gold); background:rgba(255,255,255,.06); }
+.strat-num { font-family:'Playfair Display',serif; font-size:2.5rem; font-weight:900; color:var(--gold); opacity:.4; margin-bottom:.5rem; }
+.strat-card h4 { font-size:1.05rem; font-weight:700; margin-bottom:.5rem; color:var(--crema); }
+.strat-card p { font-size:.87rem; color:rgba(245,230,200,.5); line-height:1.6; }
+
+/* BUDGET */
+.budget { background: var(--cream); }
+.budget-table { max-width:800px; margin:0 auto; background:white; border-radius:16px; overflow:hidden; box-shadow: var(--soft-shadow); }
+.budget-row { display:grid; grid-template-columns:2fr 1fr 1fr; padding:1.2rem 2rem; border-bottom:1px solid rgba(140,126,115,.08); align-items:center; }
+.budget-row.header { background:var(--espresso); color:var(--crema); font-weight:700; font-size:.8rem; text-transform:uppercase; letter-spacing:1px; }
+.budget-row:last-child { border-bottom:none; }
+.budget-row.total-row { background:var(--cream); font-weight:700; font-size:1.05rem; color:var(--espresso); border-top:2px solid var(--gold); }
+.budget-item { font-size:.9rem; color:var(--charcoal); }
+.budget-duration { font-size:.85rem; color:var(--warm-gray); text-align:center; }
+.budget-cost { font-size:.9rem; font-weight:600; color:var(--espresso); text-align:right; }
+
+/* SURVEY BANNER */
+.survey-banner { background: linear-gradient(135deg, var(--sage), var(--sage-light)); padding:3rem 2rem; text-align:center; color:white; }
+.survey-banner h3 { font-family:'Playfair Display',serif; font-size:1.8rem; margin-bottom:.5rem; }
+.survey-banner p { font-size:.95rem; opacity:.85; margin-bottom:1.5rem; max-width:500px; margin-left:auto; margin-right:auto; }
+.btn-survey { display:inline-block; padding:.9rem 2.5rem; background:white; color:var(--sage); border-radius:4px; font-weight:700; font-size:.9rem; text-decoration:none; text-transform:uppercase; letter-spacing:1px; transition:.3s; }
+.btn-survey:hover { transform:translateY(-2px); box-shadow: 0 8px 25px rgba(0,0,0,.15); }
+
+/* FOOTER */
+footer { background:var(--espresso); color:rgba(245,230,200,.5); padding:3rem 2rem 1.5rem; }
+.footer-grid { display:grid; grid-template-columns:2fr 1fr 1fr 1fr; gap:2rem; max-width:1100px; margin:0 auto; }
+.footer-brand .f-logo { font-family:'Playfair Display',serif; font-size:1.3rem; font-weight:900; color:var(--crema); margin-bottom:.5rem; }
+.footer-brand .f-logo span { color:var(--gold); font-family:'Satisfy',cursive; }
+.footer-brand p { font-size:.83rem; line-height:1.7; }
+.footer-col h5 { color:var(--crema); font-size:.8rem; text-transform:uppercase; letter-spacing:1px; margin-bottom:.8rem; }
+.footer-col a { display:block; color:rgba(245,230,200,.5); text-decoration:none; font-size:.85rem; margin-bottom:.4rem; transition:color .3s; }
+.footer-col a:hover { color:var(--gold); }
+.footer-bottom { text-align:center; padding-top:2rem; margin-top:2rem; border-top:1px solid rgba(245,230,200,.08); font-size:.75rem; max-width:1100px; margin-left:auto; margin-right:auto; }
+
+/* RESPONSIVE */
+@media(max-width:900px) {
+  .about-grid,.pub-grid { grid-template-columns:1fr; }
+  .footer-grid { grid-template-columns:1fr 1fr; }
+}
+@media(max-width:700px) {
+  .nav-links { display:none; position:absolute; top:64px; left:0; right:0; background:rgba(26,14,10,.98); padding:1.5rem; flex-direction:column; gap:1rem; z-index:999; }
+  .nav-links.show { display:flex !important; }
+  .hamburger { display:flex; }
+  .form-row { grid-template-columns:1fr; }
+  .footer-grid { grid-template-columns:1fr; }
+  .budget-row { grid-template-columns:1.5fr 1fr 1fr; padding:1rem; }
+}
+
+/* REVEAL */
+.reveal { opacity:0; transform:translateY(30px); transition: opacity .6s ease, transform .6s ease; }
+.reveal.visible { opacity:1; transform:translateY(0); }
+</style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <a href="#" class="nav-logo">CAFÉ <span>Origen</span></a>
+  <ul class="nav-links" id="navMenu">
+    <li><a href="#about">Nosotros</a></li>
+    <li><a href="#catalog">Catálogo</a></li>
+    <li><a href="#survey-dashboard">Encuesta</a></li>
+    <li><a href="#audience">Audiencia</a></li>
+    <li><a href="#publications">Publicaciones</a></li>
+    <li><a href="#video">Video</a></li>
+    <li><a href="#orders">Pedidos</a></li>
+    <li><a href="#strategy">Estrategia</a></li>
+    <li><a href="#budget">Presupuesto</a></li>
+    <li><a href="#orders" class="nav-cta">Ordenar</a></li>
+  </ul>
+  <button class="hamburger" onclick="document.getElementById('navMenu').classList.toggle('show')"><span></span><span></span><span></span></button>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="home">
+  <div class="hero-content">
+    <div class="hero-badge">Desde las montañas de Colombia</div>
+    <h1>El café que cuenta <em>tu origen</em></h1>
+    <p>Granos de especialidad cultivados por familias cafeteras colombianas. Del campo a tu taza, sin intermediarios, con alma.</p>
+    <div class="hero-btns">
+      <a href="#catalog" class="btn-primary">Ver Catálogo</a>
+      <a href="#about" class="btn-outline">Nuestra Historia</a>
+    </div>
+  </div>
+</section>
+
+<!-- LOGO -->
+<section class="logo-showcase" id="logo">
+  <div class="container reveal">
+    <div class="logo-container">
+      <div class="logo-icon">☕</div>
+      <div class="logo-text">CAFÉ ORIGEN</div>
+      <div class="logo-sub">Especialidad Colombiana</div>
+    </div>
+    <p class="logo-desc">Nuestro logo refleja la esencia artesanal y el legado cafetero colombiano. El grano simboliza nuestro compromiso con la calidad desde el cultivo hasta la taza.</p>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section class="section about" id="about">
+  <div class="container">
+    <div class="about-grid">
+      <div class="about-img reveal">🌿</div>
+      <div class="about-content reveal">
+        <div class="section-header" style="text-align:left;margin-bottom:1.5rem">
+          <div class="tag">Información Institucional</div>
+          <h2>De las fincas del Huila a tu mesa</h2>
+        </div>
+        <h3>¿Quiénes Somos?</h3>
+        <p><strong>Café Origen S.A.S.</strong> es una empresa colombiana fundada en 2024 en Bogotá, dedicada a la comercialización de café de especialidad proveniente de fincas familiares del Huila, Nariño y Cauca.</p>
+        <p><strong>NIT:</strong> 901.567.890-1 | <strong>Sede:</strong> Cra 7 # 45-20, Chapinero, Bogotá</p>
+        <p><strong>Misión:</strong> Conectar a los consumidores urbanos con el café de especialidad colombiano, generando valor justo para los caficultores y una experiencia única para el consumidor.</p>
+        <p><strong>Visión:</strong> Ser la marca referente de café de especialidad directo de origen en Colombia para 2028, con presencia en 3 países de Latinoamérica.</p>
+        <div class="about-values">
+          <div class="value-item"><div class="value-dot"></div><span>Comercio Justo</span></div>
+          <div class="value-item"><div class="value-dot" style="background:var(--caramel)"></div><span>Trazabilidad</span></div>
+          <div class="value-item"><div class="value-dot" style="background:var(--gold)"></div><span>Calidad +84pts</span></div>
+          <div class="value-item"><div class="value-dot" style="background:var(--terracota)"></div><span>Sostenibilidad</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CATÁLOGO -->
+<section class="section catalog" id="catalog">
+  <div class="container">
+    <div class="section-header reveal">
+      <div class="tag">Nuestro Catálogo</div>
+      <h2>Granos Seleccionados de Origen</h2>
+      <p>Cada variedad cuenta la historia de una región, un suelo y una familia cafetera</p>
+    </div>
+    <div class="catalog-grid">
+      <div class="product-card reveal">
+        <div class="product-img bg1"><span style="font-size:4rem">🫘</span><div class="price-tag">$38.900</div></div>
+        <div class="product-info">
+          <h4>Huila — Finca El Paraíso</h4>
+          <div class="weight">340g · Grano entero · Tueste medio</div>
+          <p>Notas de panela, ciruela y chocolate negro. Proceso honey. SCA Score: 87</p>
+          <button class="btn-add" onclick="addToCart('Huila Finca El Paraíso',38900)">Agregar al Carrito 🛒</button>
+        </div>
+      </div>
+      <div class="product-card reveal">
+        <div class="product-img bg2"><span style="font-size:4rem">🫘</span><div class="price-tag">$42.500</div></div>
+        <div class="product-info">
+          <h4>Nariño — La Montaña</h4>
+          <div class="weight">340g · Grano entero · Tueste ligero</div>
+          <p>Notas de frutos rojos, caramelo y jazmín. Proceso lavado. SCA Score: 89</p>
+          <button class="btn-add" onclick="addToCart('Nariño La Montaña',42500)">Agregar al Carrito 🛒</button>
+        </div>
+      </div>
+      <div class="product-card reveal">
+        <div class="product-img bg3"><span style="font-size:4rem">🫘</span><div class="price-tag">$35.000</div></div>
+        <div class="product-info">
+          <h4>Cauca — Sierra Nevada</h4>
+          <div class="weight">340g · Grano entero · Tueste oscuro</div>
+          <p>Notas de nuez, cacao y especias. Proceso natural. SCA Score: 85</p>
+          <button class="btn-add" onclick="addToCart('Cauca Sierra Nevada',35000)">Agregar al Carrito 🛒</button>
+        </div>
+      </div>
+      <div class="product-card reveal">
+        <div class="product-img bg4"><span style="font-size:4rem">☕</span><div class="price-tag">$18.500</div></div>
+        <div class="product-info">
+          <h4>Kit Degustación x3</h4>
+          <div class="weight">3 x 100g · Variedades mixtas</div>
+          <p>Prueba las 3 regiones en presentación compacta. Ideal para regalo o primer acercamiento.</p>
+          <button class="btn-add" onclick="addToCart('Kit Degustación x3',18500)">Agregar al Carrito 🛒</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== ESTUDIO DE MERCADO DASHBOARD ===== -->
+<section class="section survey-dash" id="survey-dashboard">
+  <div class="container">
+    <div class="section-header reveal">
+      <div class="tag">Estudio de Mercado</div>
+      <h2>Resultados de la Encuesta</h2>
+      <p>24 personas encuestadas — Investigación de mercado para validar la propuesta de valor de Café Origen</p>
+    </div>
+    <div class="survey-kpis reveal">
+      <div class="survey-kpi"><div class="kn">24</div><div class="kt">Encuestados</div></div>
+      <div class="survey-kpi"><div class="kn">79%</div><div class="kt">Comprarían</div></div>
+      <div class="survey-kpi"><div class="kn">83%</div><div class="kt">Pagarían más</div></div>
+      <div class="survey-kpi"><div class="kn">71%</div><div class="kt">Origen Importa</div></div>
+      <div class="survey-kpi"><div class="kn">67%</div><div class="kt">Interés en SCA</div></div>
+    </div>
+    <div class="charts-grid">
+      <div class="chart-card reveal"><h4>📊 ¿Comprarías Café Origen?</h4><div class="chart-wrap"><canvas id="c1"></canvas></div></div>
+      <div class="chart-card reveal"><h4>👥 Rango de Edad</h4><div class="chart-wrap"><canvas id="c2"></canvas></div></div>
+      <div class="chart-card reveal"><h4>☕ Frecuencia de Consumo</h4><div class="chart-wrap"><canvas id="c3"></canvas></div></div>
+      <div class="chart-card reveal"><h4>🛒 ¿Dónde Compran Café?</h4><div class="chart-wrap"><canvas id="c4"></canvas></div></div>
+      <div class="chart-card reveal"><h4>📱 Red Social Preferida</h4><div class="chart-wrap"><canvas id="c5"></canvas></div></div>
+      <div class="chart-card reveal"><h4>💳 Método de Pago Preferido</h4><div class="chart-wrap"><canvas id="c6"></canvas></div></div>
+      <div class="chart-card reveal"><h4>💰 Gasto Actual en Café</h4><div class="chart-wrap"><canvas id="c7"></canvas></div></div>
+      <div class="chart-card reveal"><h4>🧠 Conocimiento de Café SCA</h4><div class="chart-wrap"><canvas id="c8"></canvas></div></div>
+    </div>
+    <div class="analysis-box reveal">
+      <h4>📋 Análisis Estratégico — Decisiones basadas en datos</h4>
+      <div class="analysis-grid">
+        <div class="insight-card"><div class="ic">✅</div><h5>Intención de Compra Validada</h5><p>El 67% compraría "probablemente" y el 13% "definitivamente". Solo 1 persona rechaza la propuesta. Esto confirma la viabilidad del modelo directo al consumidor con trazabilidad QR.</p><span class="insight-action">→ Lanzar campaña con confianza</span></div>
+        <div class="insight-card"><div class="ic">💡</div><h5>Educar antes de Vender</h5><p>El 42% no conoce el café de especialidad pero le interesa, y el 25% no le interesa aún. La estrategia debe priorizar educación: ¿qué es el puntaje SCA? ¿Por qué importa el origen?</p><span class="insight-action">→ Contenido educativo en TikTok e IG</span></div>
+        <div class="insight-card"><div class="ic">🎯</div><h5>Público: 26-35, Empleados, Bogotá</h5><p>54% tiene entre 26-35 años, 58% son empleados y 83% reside en Bogotá. El buyer persona principal es un profesional joven urbano que compra café en supermercado.</p><span class="insight-action">→ Segmentar ads Bogotá 25-38 años</span></div>
+        <div class="insight-card"><div class="ic">📱</div><h5>Canales: TikTok + Web + Instagram</h5><p>TikTok y Páginas Web empatan con 33% cada uno, seguidos de Instagram (25%). La estrategia debe ser omnicanal con foco en video corto y SEO para la web.</p><span class="insight-action">→ Priorizar TikTok + Landing SEO</span></div>
+        <div class="insight-card"><div class="ic">💳</div><h5>PSE/Nequi como Pago Principal</h5><p>42% prefiere PSE/Nequi/Daviplata, 33% tarjeta y 21% contra entrega. La pasarela debe tener integración Nequi obligatoria, y ofrecer contraentrega en Bogotá.</p><span class="insight-action">→ Integrar Nequi + contraentrega</span></div>
+        <div class="insight-card"><div class="ic">💰</div><h5>Precio en Rango Aceptable</h5><p>42% ya paga $20-35K y 25% paga $35-50K por bolsa. Nuestro rango de $35-42K está en la transición natural. El código ORIGEN20 (20% OFF) baja la barrera a ~$31K.</p><span class="insight-action">→ Lanzar con descuento primer compra</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== CATÁLOGO PDF DIGITAL ===== -->
+<section class="section catalog-pdf" id="catalog-pdf">
+  <div class="container">
+    <div class="section-header reveal">
+      <div class="tag">Catálogo Digital</div>
+      <h2>Catálogo de Productos 2026</h2>
+      <p>Versión digital del catálogo completo con productos, precios y lista comercial</p>
+    </div>
+    <div class="pdf-tabs reveal">
+      <button class="pdf-tab active" onclick="showPdfPage(this,'info')">Información</button>
+      <button class="pdf-tab" onclick="showPdfPage(this,'products')">Productos</button>
+      <button class="pdf-tab" onclick="showPdfPage(this,'extras')">Kits y Extras</button>
+      <button class="pdf-tab" onclick="showPdfPage(this,'prices')">Lista de Precios</button>
+    </div>
+    <div class="pdf-page active" id="page-info">
+      <div class="pdf-content reveal">
+        <div style="text-align:center;margin-bottom:1.5rem"><div style="font-family:'Playfair Display',serif;font-size:2rem;font-weight:900;color:var(--espresso)">CAFÉ ORIGEN</div><div style="font-size:.8rem;color:var(--gold);letter-spacing:3px">ESPECIALIDAD COLOMBIANA</div></div>
+        <h3>Quiénes Somos</h3>
+        <p>Café Origen S.A.S. es una empresa colombiana fundada en 2024 en Bogotá, dedicada a la comercialización de café de especialidad proveniente de fincas familiares del Huila, Nariño y Cauca. Trabajamos directamente con más de 15 familias caficultoras.</p>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin:1.5rem 0">
+          <div style="background:var(--espresso);color:var(--crema);padding:1.2rem;border-radius:8px"><strong style="color:var(--gold)">Misión</strong><br><span style="font-size:.85rem">Conectar a los consumidores urbanos con el café de especialidad colombiano, generando valor justo para los caficultores.</span></div>
+          <div style="background:var(--espresso);color:var(--crema);padding:1.2rem;border-radius:8px"><strong style="color:var(--gold)">Visión</strong><br><span style="font-size:.85rem">Ser la marca referente de café de especialidad directo de origen en Colombia para 2028, con presencia en 3 países.</span></div>
+        </div>
+        <h4>Nuestros Valores</h4>
+        <p>🤝 <strong>Comercio Justo</strong> — 40% por encima del precio del mercado a caficultores.</p>
+        <p>📱 <strong>Trazabilidad Total</strong> — Código QR que conecta con la finca y el caficultor.</p>
+        <p>⭐ <strong>Calidad +84 SCA</strong> — Solo cafés con puntaje superior a 84 puntos.</p>
+        <p>🌿 <strong>Sostenibilidad</strong> — Empaques 100% reciclables, huella de carbono neutra.</p>
+        <p style="margin-top:1rem;font-size:.85rem;padding:.8rem;background:var(--cream);border-radius:6px"><strong>NIT:</strong> 901.567.890-1 | <strong>Sede:</strong> Cra 7 #45-20, Chapinero, Bogotá | <strong>Tel:</strong> +57 320 555 1234</p>
+      </div>
+    </div>
+    <div class="pdf-page" id="page-products">
+      <div class="pdf-content reveal">
+        <h3>Cafés de Especialidad — Origen Único</h3>
+        <div class="pdf-pg">
+          <div class="pdf-prod"><span class="badge">SCA 87</span><h5>Finca El Paraíso</h5><div class="meta">Huila · 340g · Tueste medio · Honey</div><div class="notes">Panela, ciruela, chocolate negro</div><p style="font-size:.8rem;color:var(--charcoal)">Cultivado a 1.750 msnm. Proceso honey que resalta dulzura natural.</p><div class="price">$38.900</div></div>
+          <div class="pdf-prod"><span class="badge">SCA 89</span><h5>La Montaña</h5><div class="meta">Nariño · 340g · Tueste ligero · Lavado</div><div class="notes">Frutos rojos, caramelo, jazmín</div><p style="font-size:.8rem;color:var(--charcoal)">2.100 msnm. Variedad Caturra. Acidez brillante y final floral.</p><div class="price">$42.500</div></div>
+          <div class="pdf-prod"><span class="badge">SCA 85</span><h5>Sierra Nevada</h5><div class="meta">Cauca · 340g · Tueste oscuro · Natural</div><div class="notes">Nuez, cacao, especias</div><p style="font-size:.8rem;color:var(--charcoal)">1.600 msnm. Secado en camas africanas. Cuerpo robusto.</p><div class="price">$35.000</div></div>
+          <div class="pdf-prod"><span class="badge">SCA 85+</span><h5>Kit Degustación x3</h5><div class="meta">Mixto · 3×100g · Variados</div><div class="notes">Tres perfiles únicos</div><p style="font-size:.8rem;color:var(--charcoal)">Muestras de Huila, Nariño y Cauca. Ideal para regalo.</p><div class="price">$18.500</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="pdf-page" id="page-extras">
+      <div class="pdf-content reveal">
+        <h3>Productos Adicionales</h3>
+        <div class="pdf-pg">
+          <div class="pdf-prod"><h5>Suscripción Mensual</h5><div class="meta">340g/mes · Rotativo</div><div class="notes">Ahorra 10% — Café fresco cada mes</div><div class="price">$34.900/mes</div></div>
+          <div class="pdf-prod"><h5>Pack Empresarial x10</h5><div class="meta">10×340g · Mixto</div><div class="notes">Factura electrónica + envío gratis</div><div class="price">$320.000</div></div>
+          <div class="pdf-prod"><h5>Café Molido Huila</h5><div class="meta">250g · Huila · SCA 87</div><div class="notes">Molienda media para goteo o prensa</div><div class="price">$32.500</div></div>
+          <div class="pdf-prod"><h5>Drip Bags x8</h5><div class="meta">8 sobres · Huila</div><div class="notes">Solo agrega agua caliente</div><div class="price">$24.900</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="pdf-page" id="page-prices">
+      <div class="pdf-content reveal">
+        <h3>Lista de Precios 2026</h3>
+        <table class="ptable">
+          <thead><tr><th>#</th><th>Producto</th><th>Peso</th><th>Origen</th><th>SCA</th><th>Precio</th><th>Dto. 20%</th></tr></thead>
+          <tbody>
+            <tr><td>1</td><td>Finca El Paraíso</td><td>340g</td><td>Huila</td><td>87</td><td class="pc">$38.900</td><td class="dc">$31.120</td></tr>
+            <tr><td>2</td><td>La Montaña</td><td>340g</td><td>Nariño</td><td>89</td><td class="pc">$42.500</td><td class="dc">$34.000</td></tr>
+            <tr><td>3</td><td>Sierra Nevada</td><td>340g</td><td>Cauca</td><td>85</td><td class="pc">$35.000</td><td class="dc">$28.000</td></tr>
+            <tr><td>4</td><td>Kit Degustación x3</td><td>3×100g</td><td>Mixto</td><td>85+</td><td class="pc">$18.500</td><td class="dc">$14.800</td></tr>
+            <tr><td>5</td><td>Suscripción Mensual</td><td>340g/mes</td><td>Rotativo</td><td>85+</td><td class="pc">$34.900</td><td class="dc">$31.410</td></tr>
+            <tr><td>6</td><td>Pack Empresarial x10</td><td>10×340g</td><td>Mixto</td><td>85+</td><td class="pc">$320.000</td><td class="dc">$288.000</td></tr>
+            <tr><td>7</td><td>Café Molido Huila</td><td>250g</td><td>Huila</td><td>87</td><td class="pc">$32.500</td><td class="dc">$26.000</td></tr>
+            <tr><td>8</td><td>Drip Bags x8</td><td>8 sobres</td><td>Huila</td><td>87</td><td class="pc">$24.900</td><td class="dc">$19.920</td></tr>
+          </tbody>
+        </table>
+        <div style="margin-top:1.5rem;background:var(--espresso);color:var(--crema);padding:1.2rem;border-radius:8px;text-align:center"><div style="font-family:'Playfair Display',serif;font-size:1.3rem;color:var(--gold);font-weight:700">CÓDIGO: ORIGEN20</div><div style="font-size:.9rem;margin-top:.3rem">20% de descuento en tu primera compra</div><div style="font-size:.75rem;opacity:.6;margin-top:.3rem">Válido hasta 30 de junio de 2026</div></div>
+        <h4>Información de Envío</h4>
+        <p>📦 Bogotá: $8.000 (24-48h). Gratis en pedidos mayores a $80.000</p>
+        <p>🚚 Nacional: $12.000 (3-5 días). Gratis en pedidos mayores a $120.000</p>
+        <p>💳 Pagos: Tarjeta, PSE, Nequi, Daviplata, contra entrega (Bogotá)</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PÚBLICO OBJETIVO -->
+<section class="section audience" id="audience">
+  <div class="container">
+    <div class="section-header reveal"><div class="tag">Segmentación</div><h2>Nuestro Público Objetivo</h2><p>Perfiles de consumidor que guían nuestra estrategia de comunicación y producto</p></div>
+    <div class="persona-grid">
+      <div class="persona-card reveal"><div class="persona-icon">👩‍💻</div><h4>Profesional Urbana</h4><div class="age">Mujeres 28-40 · NSE 4-6 · Bogotá, Medellín, Cali</div><p>Trabaja en oficina o remoto. Consume café a diario, busca calidad sobre precio. Activa en Instagram y TikTok.</p><div class="persona-tags"><span class="persona-tag">Café Diario</span><span class="persona-tag">Instagram</span><span class="persona-tag">Sostenible</span><span class="persona-tag">E-commerce</span></div></div>
+      <div class="persona-card reveal"><div class="persona-icon">👨‍🍳</div><h4>Foodie Millennial</h4><div class="age">Hombres y Mujeres 25-35 · NSE 3-5 · Principales ciudades</div><p>Entusiasta gastronómico, prepara café en V60 o Aeropress. Busca experiencias, comparte en redes.</p><div class="persona-tags"><span class="persona-tag">Método Manual</span><span class="persona-tag">TikTok</span><span class="persona-tag">Experiencias</span><span class="persona-tag">Tueste Ligero</span></div></div>
+      <div class="persona-card reveal"><div class="persona-icon">🏢</div><h4>Empresa / Corporativo</h4><div class="age">Gerentes de compras · Oficinas +20 personas · Bogotá</div><p>Café premium para oficina o regalos corporativos. Valoran facturación electrónica y suscripciones.</p><div class="persona-tags"><span class="persona-tag">B2B</span><span class="persona-tag">Volumen</span><span class="persona-tag">Facturación</span><span class="persona-tag">Suscripción</span></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- PUBLICACIONES -->
+<section class="section publications" id="publications">
+  <div class="container">
+    <div class="section-header reveal"><div class="tag">Diseño de Contenidos</div><h2>Publicaciones para Redes</h2><p>Dos piezas diseñadas para la campaña de lanzamiento digital</p></div>
+    <div class="pub-grid">
+      <div class="pub-card reveal"><div class="pub-visual pub1"><div class="pub-icon">☕</div><h3>Tu primer sorbo de origen</h3><div class="pub-tagline">Descubre por qué un café de 87 puntos SCA cambia todo</div><div class="pub-cta">COMPRA AHORA — 20% OFF</div></div><div class="pub-meta"><div class="platform">📱 Instagram Feed + Stories</div><h4>Publicación 1 — Lanzamiento de Marca</h4><p>Carrusel (5 slides) con storytelling del campo a la taza. CTA directo con código ORIGEN20.</p></div></div>
+      <div class="pub-card reveal"><div class="pub-visual pub2"><div class="pub-icon">🌿</div><h3>Del campo a tu taza</h3><div class="pub-tagline">Conoce a Don Hernando, caficultor del Huila</div><div class="pub-cta">CONOCE SU HISTORIA</div></div><div class="pub-meta"><div class="platform">📱 TikTok + Instagram Reels</div><h4>Publicación 2 — Storytelling de Origen</h4><p>Contenido emocional que conecta al consumidor con el caficultor. Video 30s + imagen estática.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- VIDEO -->
+<section class="section video-section" id="video">
+  <div class="container">
+    <div class="section-header reveal"><div class="tag">Contenido Audiovisual</div><h2>Video de Campaña</h2><p>Pieza audiovisual corta para TikTok, Reels e historias</p></div>
+    <div class="video-container reveal">
+      <div class="video-player" id="videoPlayer" onclick="playVideo()">
+        <div class="play-btn">▶</div>
+        <div class="video-title"><h4>"Del Origen a Tu Taza" — 30 segundos</h4><p>Video conceptual de campaña de lanzamiento</p></div>
+      </div>
+      <div class="video-info">
+        <p><strong>Guion (30s):</strong> Amanecer en finca del Huila → manos recogiendo cerezas → proceso secado → tostión artesanal en Bogotá → persona preparando café en V60 → primer sorbo → logo + "Del campo a tu taza".</p>
+        <div class="video-stats">
+          <div class="stat"><div class="num">30s</div><div class="label">Duración</div></div>
+          <div class="stat"><div class="num">9:16</div><div class="label">Formato</div></div>
+          <div class="stat"><div class="num">3</div><div class="label">Plataformas</div></div>
+          <div class="stat"><div class="num">$800K</div><div class="label">Costo Est.</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROCESAMIENTO DE ÓRDENES -->
+<section class="section orders" id="orders">
+  <div class="container">
+    <div class="section-header reveal"><div class="tag">Procesamiento de Órdenes</div><h2>Realiza Tu Pedido</h2><p>Completa tu información y recibe tu café en 24-48 horas en Bogotá</p></div>
+    <div class="order-form reveal">
+      <div id="cart-display"><div class="order-summary" id="cart-summary" style="display:none"><h4>🛒 Tu Carrito</h4><div id="cart-items"></div></div></div>
+      <h4 style="font-family:'Playfair Display',serif;margin-bottom:1rem;color:var(--espresso)">Información de Envío</h4>
+      <div class="form-row"><div class="form-group"><label>Nombre completo</label><input type="text" placeholder="Tu nombre"></div><div class="form-group"><label>Teléfono / WhatsApp</label><input type="tel" placeholder="+57 300 000 0000"></div></div>
+      <div class="form-row"><div class="form-group"><label>Correo electrónico</label><input type="email" placeholder="tu@correo.com"></div><div class="form-group"><label>Ciudad</label><select><option>Bogotá</option><option>Medellín</option><option>Cali</option><option>Otra</option></select></div></div>
+      <div class="form-row"><div class="form-group full"><label>Dirección de entrega</label><input type="text" placeholder="Calle, número, barrio, indicaciones"></div></div>
+      <div class="form-row"><div class="form-group"><label>Producto</label><select id="product-select"><option value="38900">Huila — Finca El Paraíso ($38.900)</option><option value="42500">Nariño — La Montaña ($42.500)</option><option value="35000">Cauca — Sierra Nevada ($35.000)</option><option value="18500">Kit Degustación x3 ($18.500)</option></select></div><div class="form-group"><label>Cantidad</label><select id="qty-select"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="5">5</option><option value="10">10</option></select></div></div>
+      <div class="form-row"><div class="form-group full"><label>Notas adicionales</label><textarea rows="3" placeholder="Molido fino, regalo, etc."></textarea></div></div>
+      <div class="order-summary"><h4>Resumen del Pedido</h4><div class="summary-line"><span>Subtotal</span><span id="subtotal">$38.900</span></div><div class="summary-line"><span>Envío (Bogotá)</span><span>$8.000</span></div><div class="summary-line"><span>Descuento ORIGEN20 (-20%)</span><span id="discount" style="color:var(--sage)">-$7.780</span></div><div class="summary-line total"><span>Total a pagar</span><span id="total">$39.120</span></div></div>
+      <button class="btn-order" onclick="processOrder()">Procesar Pedido → Ir a Pagar</button>
+    </div>
+  </div>
+</section>
+
+<!-- PASARELA DE PAGOS -->
+<section class="section payment" id="payment">
+  <div class="container">
+    <div class="section-header reveal"><div class="tag">Pasarela de Pago</div><h2>Pago Seguro</h2><p>Transacciones protegidas con cifrado SSL de 256 bits</p></div>
+    <div class="payment-container reveal">
+      <div class="payment-header"><h3>Completar Pago</h3><p>Total a pagar: <strong style="color:var(--gold);font-size:1.3rem">$39.120 COP</strong></p></div>
+      <div class="payment-methods">
+        <div class="method-tabs"><button class="method-tab active" onclick="switchTab(this)">💳 Tarjeta</button><button class="method-tab" onclick="switchTab(this)">🏦 PSE</button><button class="method-tab" onclick="switchTab(this)">📱 Nequi</button></div>
+        <div class="card-form">
+          <div class="card-input"><input type="text" placeholder="Número de tarjeta" maxlength="19"></div>
+          <div class="card-input"><input type="text" placeholder="Nombre del titular"></div>
+          <div class="card-row"><div class="card-input"><input type="text" placeholder="MM/AA" maxlength="5"></div><div class="card-input"><input type="text" placeholder="CVV" maxlength="4"></div></div>
+          <div class="secure-badge">🔒 Conexión segura · Datos cifrados SSL 256-bit · Proveedor: ePayco / MercadoPago</div>
+          <button class="btn-pay" onclick="simulatePayment()">Pagar $39.120 COP</button>
+        </div>
+        <div class="payment-logos"><span>Visa</span><span>Mastercard</span><span>PSE</span><span>Nequi</span><span>Daviplata</span><span>ePayco</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ESTRATEGIA -->
+<section class="section strategy" id="strategy">
+  <div class="container">
+    <div class="section-header reveal"><div class="tag">Plan de Campaña</div><h2>Estrategia de Campaña Digital</h2><p>Plan integral de lanzamiento para los primeros 3 meses</p></div>
+    <div class="strat-grid">
+      <div class="strat-card reveal"><div class="strat-num">01</div><h4>Awareness — Reconocimiento</h4><p><strong>Mes 1.</strong> Campaña de expectativa en Instagram y TikTok. Video "Del Origen a Tu Taza" con pauta en Meta Ads. Colaboración con 3 micro-influencers. KPI: 50.000 impresiones, 2.000 seguidores.</p></div>
+      <div class="strat-card reveal"><div class="strat-num">02</div><h4>Engagement — Comunidad</h4><p><strong>Mes 2.</strong> Serie "Conoce al Caficultor" (storytelling semanal). Encuestas en Stories. Cata virtual gratuita. Email marketing. KPI: 5% engagement rate, 500 suscriptores email.</p></div>
+      <div class="strat-card reveal"><div class="strat-num">03</div><h4>Conversión — Ventas</h4><p><strong>Mes 3.</strong> Retargeting en Meta y Google Ads. Código ORIGEN20 (20% OFF). WhatsApp Business para cierre. KPI: 100 ventas, CAC menor a $15.000.</p></div>
+      <div class="strat-card reveal"><div class="strat-num">04</div><h4>Retención — Fidelización</h4><p><strong>Mes 3+.</strong> Programa suscripción mensual. Email post-venta con guías de preparación. Referidos: "Invita un amigo, ambos 15% OFF". KPI: 25% tasa recompra.</p></div>
+      <div class="strat-card reveal"><div class="strat-num">05</div><h4>Canales de Distribución</h4><p><strong>Orgánico:</strong> Instagram, TikTok, Blog SEO. <strong>Pago:</strong> Meta Ads, Google Ads. <strong>Directo:</strong> Email (Mailchimp), WhatsApp Business. <strong>Marketplace:</strong> Rappi, MercadoLibre.</p></div>
+      <div class="strat-card reveal"><div class="strat-num">06</div><h4>Métricas — KPIs Clave</h4><p><strong>CAC:</strong> &lt;$15.000 · <strong>ROAS:</strong> 3:1 · <strong>Conversión Web:</strong> 2.5% · <strong>Engagement:</strong> 5%+ · <strong>LTV:</strong> $150.000 · <strong>NPS:</strong> &gt;60</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- PRESUPUESTO -->
+<section class="section budget" id="budget">
+  <div class="container">
+    <div class="section-header reveal"><div class="tag">Inversión Estimada</div><h2>Presupuesto de Campaña</h2><p>Presupuesto estimado para los 3 primeros meses del lanzamiento digital</p></div>
+    <div class="budget-table reveal">
+      <div class="budget-row header"><span>Concepto</span><span style="text-align:center">Duración</span><span style="text-align:right">Costo (COP)</span></div>
+      <div class="budget-row"><span class="budget-item">🌐 Dominio + Hosting WordPress</span><span class="budget-duration">12 meses</span><span class="budget-cost">$350.000</span></div>
+      <div class="budget-row"><span class="budget-item">🎨 Diseño Logo + Identidad Visual</span><span class="budget-duration">Único</span><span class="budget-cost">$800.000</span></div>
+      <div class="budget-row"><span class="budget-item">📸 Producción de Video (30s)</span><span class="budget-duration">Único</span><span class="budget-cost">$800.000</span></div>
+      <div class="budget-row"><span class="budget-item">📱 Diseño Publicaciones (x10)</span><span class="budget-duration">3 meses</span><span class="budget-cost">$500.000</span></div>
+      <div class="budget-row"><span class="budget-item">📣 Meta Ads (Instagram + Facebook)</span><span class="budget-duration">3 meses</span><span class="budget-cost">$1.500.000</span></div>
+      <div class="budget-row"><span class="budget-item">🔍 Google Ads (Search + Display)</span><span class="budget-duration">3 meses</span><span class="budget-cost">$900.000</span></div>
+      <div class="budget-row"><span class="budget-item">👥 Influencers (3 micro-influencers)</span><span class="budget-duration">3 meses</span><span class="budget-cost">$600.000</span></div>
+      <div class="budget-row"><span class="budget-item">📧 Email Marketing (Mailchimp)</span><span class="budget-duration">3 meses</span><span class="budget-cost">$150.000</span></div>
+      <div class="budget-row"><span class="budget-item">💳 Pasarela de Pagos (ePayco)</span><span class="budget-duration">Único + comisión</span><span class="budget-cost">$200.000</span></div>
+      <div class="budget-row"><span class="budget-item">📦 Empaque y envío (100 uds)</span><span class="budget-duration">3 meses</span><span class="budget-cost">$700.000</span></div>
+      <div class="budget-row total-row"><span>TOTAL INVERSIÓN ESTIMADA</span><span style="text-align:center">—</span><span style="text-align:right;color:var(--caramel)">$6.500.000</span></div>
+    </div>
+    <p style="text-align:center;margin-top:1.5rem;font-size:.85rem;color:var(--warm-gray)">* Presupuesto estimado para lanzamiento MVP (3 meses). ROI proyectado: 100 ventas × $38.900 = $3.890.000 ingresos.</p>
+  </div>
+</section>
+
+<!-- ENCUESTA LINK -->
+<section class="survey-banner" id="survey">
+  <h3>📋 Tu Opinión Nos Importa</h3>
+  <p>Ayúdanos a mejorar respondiendo nuestra encuesta de satisfacción y preferencias cafeteras</p>
+  <a href="https://forms.gle/EJEMPLO" target="_blank" class="btn-survey">Responder Encuesta (Google Forms)</a>
+  <p style="margin-top:.8rem;font-size:.75rem;opacity:.7;">24 encuestados registrados — Enlace a formulario de Google Forms</p>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand"><div class="f-logo">CAFÉ <span>Origen</span></div><p>Café de especialidad colombiano. Del campo a tu taza, sin intermediarios. Bogotá, Colombia.</p><p style="margin-top:.5rem">📍 Cra 7 # 45-20, Chapinero<br>📞 +57 320 555 1234<br>📧 hola@cafeorigen.co</p></div>
+    <div class="footer-col"><h5>Navegación</h5><a href="#about">Nosotros</a><a href="#catalog">Catálogo</a><a href="#survey-dashboard">Encuesta</a><a href="#orders">Pedidos</a><a href="#payment">Pagar</a></div>
+    <div class="footer-col"><h5>Legal</h5><a href="#">Términos y Condiciones</a><a href="#">Política de Privacidad</a><a href="#">Política de Devoluciones</a></div>
+    <div class="footer-col"><h5>Redes Sociales</h5><a href="#">Instagram @cafeorigen</a><a href="#">TikTok @cafeorigen</a><a href="#">Facebook /cafeorigen</a><a href="#">YouTube</a></div>
+  </div>
+  <div class="footer-bottom"><p>© 2026 Café Origen S.A.S. — NIT 901.567.890-1 — Todos los derechos reservados. Proyecto académico de Marketing Digital.</p></div>
+</footer>
+
+<script>
+// ===== CART =====
+var cart = [];
+function addToCart(name, price) {
+  cart.push({name:name, price:price});
+  updateCartDisplay();
+  document.getElementById('orders').scrollIntoView({behavior:'smooth'});
+}
+function updateCartDisplay() {
+  var summary = document.getElementById('cart-summary');
+  var items = document.getElementById('cart-items');
+  if(cart.length > 0) {
+    summary.style.display = 'block';
+    var html = '';
+    var cartTotal = 0;
+    for(var i=0; i<cart.length; i++){
+      html += '<div class="summary-line"><span>'+cart[i].name+'</span><span>$'+cart[i].price.toLocaleString()+'</span></div>';
+      cartTotal += cart[i].price;
+    }
+    html += '<div class="summary-line total"><span>Total carrito</span><span>$'+cartTotal.toLocaleString()+'</span></div>';
+    items.innerHTML = html;
+  }
+}
+
+// ===== ORDER SUMMARY =====
+document.getElementById('product-select').addEventListener('change', updateSummary);
+document.getElementById('qty-select').addEventListener('change', updateSummary);
+function updateSummary() {
+  var price = parseInt(document.getElementById('product-select').value);
+  var qty = parseInt(document.getElementById('qty-select').value);
+  var subtotal = price * qty;
+  var discount = Math.round(subtotal * 0.2);
+  var shipping = 8000;
+  var total = subtotal + shipping - discount;
+  document.getElementById('subtotal').textContent = '$' + subtotal.toLocaleString();
+  document.getElementById('discount').textContent = '-$' + discount.toLocaleString();
+  document.getElementById('total').textContent = '$' + total.toLocaleString();
+}
+function processOrder() {
+  document.getElementById('payment').scrollIntoView({behavior:'smooth'});
+  alert('Pedido registrado. Procede al pago seguro.');
+}
+function switchTab(el) {
+  var tabs = document.querySelectorAll('.method-tab');
+  for(var i=0;i<tabs.length;i++) tabs[i].classList.remove('active');
+  el.classList.add('active');
+}
+function simulatePayment() {
+  alert('Simulacion de pago exitosa.\n\nTransaccion #ORG-2026-00347\nEstado: APROBADA\nMonto: $39.120 COP\n\nEn un entorno real, esto se integra con ePayco, MercadoPago o Wompi.');
+}
+function playVideo() {
+  var el = document.getElementById('videoPlayer');
+  el.innerHTML = '<iframe width="100%" height="100%" src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1" frameborder="0" allow="autoplay" allowfullscreen></iframe>';
+  el.style.cursor = 'default';
+}
+
+// ===== PDF TABS =====
+function showPdfPage(btn, id) {
+  var pages = document.querySelectorAll('.pdf-page');
+  var tabs = document.querySelectorAll('.pdf-tab');
+  for(var i=0;i<pages.length;i++) pages[i].classList.remove('active');
+  for(var i=0;i<tabs.length;i++) tabs[i].classList.remove('active');
+  document.getElementById('page-' + id).classList.add('active');
+  btn.classList.add('active');
+}
+
+// ===== SCROLL REVEAL =====
+var revealObserver = new IntersectionObserver(function(entries) {
+  for(var i=0;i<entries.length;i++){
+    if(entries[i].isIntersecting) entries[i].target.classList.add('visible');
+  }
+}, {threshold: 0.1});
+var revealEls = document.querySelectorAll('.reveal');
+for(var i=0;i<revealEls.length;i++) revealObserver.observe(revealEls[i]);
+
+// ===== CHARTS =====
+var gold = '#d4a54a';
+var caramel = '#c4813d';
+var sage = '#5a7247';
+var terra = '#b85c38';
+var gray = '#8c7e73';
+var dark = '#1a0e0a';
+var crema = '#f5e6c8';
+
+function pct(v,ctx){var t=0;for(var i=0;i<ctx.dataset.data.length;i++)t+=ctx.dataset.data[i];return Math.round(v/t*100)+'%';}
+
+// C1 - Purchase intent
+new Chart(document.getElementById('c1'), {
+  type:'doughnut',
+  data:{labels:['Probablemente sí (16)','No estoy seguro (4)','Definitivamente sí (3)','Definitivamente no (1)'],datasets:[{data:[16,4,3,1],backgroundColor:[gold,gray,sage,terra],borderWidth:0}]},
+  options:{responsive:true,maintainAspectRatio:false,cutout:'55%',plugins:{legend:{labels:{color:crema,font:{size:10}},position:'bottom'}}}
+});
+
+// C2 - Age
+new Chart(document.getElementById('c2'), {
+  type:'bar',
+  data:{labels:['18-25','26-35','36-45','46-55'],datasets:[{data:[9,13,1,1],backgroundColor:[gold,caramel,sage,terra],borderRadius:6}]},
+  options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#a09080'},grid:{display:false}},y:{ticks:{color:'#a09080'},grid:{color:'rgba(255,255,255,.06)'}}}}
+});
+
+// C3 - Frequency
+new Chart(document.getElementById('c3'), {
+  type:'polarArea',
+  data:{labels:['1 vez/día (8)','Varias/día (5)','Ocasional (4)','Veces/sem (4)','No consume (3)'],datasets:[{data:[8,5,4,4,3],backgroundColor:[gold+'cc',sage+'cc',caramel+'cc',terra+'cc',gray+'cc'],borderWidth:0}]},
+  options:{responsive:true,maintainAspectRatio:false,scales:{r:{ticks:{display:false},grid:{color:'rgba(255,255,255,.08)'}}},plugins:{legend:{labels:{color:crema,font:{size:9}},position:'bottom'}}}
+});
+
+// C4 - Where buy
+new Chart(document.getElementById('c4'), {
+  type:'bar',
+  data:{labels:['Supermercado','Cafeterías','Tiendas espec.','Productores'],datasets:[{data:[14,7,2,1],backgroundColor:[gold,caramel,sage,terra],borderRadius:6}]},
+  options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#a09080'},grid:{color:'rgba(255,255,255,.06)'}},y:{ticks:{color:crema,font:{size:11}},grid:{display:false}}}}
+});
+
+// C5 - Social media
+new Chart(document.getElementById('c5'), {
+  type:'doughnut',
+  data:{labels:['TikTok (8)','Pág. Web (8)','Instagram (6)','Facebook (1)','YouTube (1)'],datasets:[{data:[8,8,6,1,1],backgroundColor:[gold,caramel,sage,terra,gray],borderWidth:0}]},
+  options:{responsive:true,maintainAspectRatio:false,cutout:'50%',plugins:{legend:{labels:{color:crema,font:{size:10}},position:'bottom'}}}
+});
+
+// C6 - Payment method
+new Chart(document.getElementById('c6'), {
+  type:'bar',
+  data:{labels:['PSE/Nequi','Tarjeta','Contra entrega','Otro'],datasets:[{data:[10,8,5,1],backgroundColor:[gold,sage,caramel,gray],borderRadius:6}]},
+  options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:crema,font:{size:10}},grid:{display:false}},y:{ticks:{color:'#a09080'},grid:{color:'rgba(255,255,255,.06)'}}}}
+});
+
+// C7 - Spend
+new Chart(document.getElementById('c7'), {
+  type:'pie',
+  data:{labels:['$20K-$35K (10)','Menos de $20K (8)','$35K-$50K (6)'],datasets:[{data:[10,8,6],backgroundColor:[gold,gray,sage],borderWidth:0}]},
+  options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:crema,font:{size:10}},position:'bottom'}}}
+});
+
+// C8 - SCA knowledge
+new Chart(document.getElementById('c8'), {
+  type:'bar',
+  data:{labels:['No, pero interesa','Sí, no probado','No interesa','Sí, lo consumo'],datasets:[{data:[10,6,6,2],backgroundColor:[gold,sage,terra,caramel],borderRadius:6}]},
+  options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#a09080'},grid:{color:'rgba(255,255,255,.06)'}},y:{ticks:{color:crema,font:{size:10}},grid:{display:false}}}}
+});
+</script>
+</body>
+</html>
